@@ -1,10 +1,8 @@
-package com.pozzle.addit.relay.entity;
+package com.pozzle.addit.tickle.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,34 +21,39 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "relays")
+@Table(name = "tickles")
 @EntityListeners(AuditingEntityListener.class)
-public class Relay {
+public class Tickle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private Long relayId;
 
     private Long authorId;
 
     @Column(length = 36, nullable = false, unique = true)
     private String uuid;
 
-    @Column(length = 100, nullable = false)
-    private String title;
-
-    @Lob
+    @Column(length = 300, nullable = false)
     private String description;
 
-    private int reactionsCount;
-
-    private int ticklesCount;
-
-    @Enumerated(EnumType.STRING)
-    private RelayStatus status;
+    @Lob
+    private String file;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+    private int repliesCount;
+
+    private int reactionsCount;
+
+    private int funnyCount;
+
+    private int sadCount;
+
+    private int surpriseCount;
+
+    private int likeCount;
 }
