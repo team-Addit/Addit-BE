@@ -2,10 +2,10 @@ package com.pozzle.addit.tickle.application;
 
 import com.pozzle.addit.common.exception.ErrorCode;
 import com.pozzle.addit.common.exception.RestApiException;
-import com.pozzle.addit.relay.dto.response.RelayCreateResponse;
 import com.pozzle.addit.relay.entity.Relay;
 import com.pozzle.addit.relay.repository.RelayRepository;
 import com.pozzle.addit.tickle.dto.request.TickleAddRequest;
+import com.pozzle.addit.tickle.dto.response.TickleAddResponse;
 import com.pozzle.addit.tickle.entity.Tickle;
 import com.pozzle.addit.tickle.repository.TickleRepository;
 import jakarta.transaction.Transactional;
@@ -22,7 +22,7 @@ public class TickleCommandService {
     private final RelayRepository relayRepository;
     private final TickleRepository tickleRepository;
 
-    public RelayCreateResponse addTickle(TickleAddRequest request, MultipartFile file) {
+    public TickleAddResponse addTickle(TickleAddRequest request, MultipartFile file) {
         //TODO file 변환 및 주소값 가져오기
         Long authorId = 1L;
         String fileUrl = "file url";
@@ -41,6 +41,6 @@ public class TickleCommandService {
             .build();
         tickleRepository.save(tickle);
 
-        return null;
+        return new TickleAddResponse(relay.getUuid(), tickle.getUuid());
     }
 }
