@@ -11,14 +11,16 @@ import com.pozzle.addit.relay.repository.RelayTagRepository;
 import com.pozzle.addit.relay.repository.TagRepository;
 import com.pozzle.addit.tickle.entity.Tickle;
 import com.pozzle.addit.tickle.repository.TickleRepository;
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Transactional
 public class RelayCommandService {
 
     private final RelayRepository relayRepository;
@@ -52,7 +54,7 @@ public class RelayCommandService {
             .build();
         tickleRepository.save(tickle);
 
-        request.tags().stream().forEach(t -> {
+        request.tags().forEach(t -> {
             Tag tag = tagRepository.findByName(t)
                 .orElseGet(() -> tagRepository.save(
                         Tag.builder()

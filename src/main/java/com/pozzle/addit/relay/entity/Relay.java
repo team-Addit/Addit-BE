@@ -53,4 +53,17 @@ public class Relay {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    public void addTickle() {
+        this.ticklesCount++;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void addReaction() {
+        this.reactionsCount++;
+    }
+
+    public void removeReaction() {
+        this.reactionsCount--;
+    }
 }
