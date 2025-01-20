@@ -1,5 +1,6 @@
 package com.pozzle.addit.relay.entity;
 
+import com.pozzle.addit.reaction.entity.ReactionType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -57,5 +58,13 @@ public class Relay {
     public void addTickle() {
         this.ticklesCount++;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void addReaction(ReactionType reaction) {
+        this.reactionsCount++;
+    }
+
+    public void removeReaction(ReactionType reactionType) {
+        this.reactionsCount--;
     }
 }

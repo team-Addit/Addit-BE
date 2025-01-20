@@ -1,5 +1,6 @@
 package com.pozzle.addit.tickle.entity;
 
+import com.pozzle.addit.reaction.entity.ReactionType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -59,5 +60,41 @@ public class Tickle {
 
     public void addReply() {
         this.repliesCount++;
+    }
+
+    public void addReaction(ReactionType reactionType) {
+        this.reactionsCount++;
+        switch (reactionType) {
+            case FUNNY:
+                this.funnyCount++;
+                break;
+            case SAD:
+                this.sadCount++;
+                break;
+            case SURPRISE:
+                this.surpriseCount++;
+                break;
+            case LIKE:
+                this.likeCount++;
+                break;
+        }
+    }
+
+    public void removeReaction(ReactionType reactionType) {
+        this.reactionsCount--;
+        switch (reactionType) {
+            case FUNNY:
+                this.funnyCount--;
+                break;
+            case SAD:
+                this.sadCount--;
+                break;
+            case SURPRISE:
+                this.surpriseCount--;
+                break;
+            case LIKE:
+                this.likeCount--;
+                break;
+        }
     }
 }

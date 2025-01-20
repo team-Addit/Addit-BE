@@ -24,7 +24,6 @@ public class ReplyCommandService {
 
         Tickle tickle = tickleRepository.findByUuid(request.tickleId())
             .orElseThrow(() -> new RestApiException(ErrorCode.TICKLE_NOT_FOUND));
-
         tickle.addReply();
 
         Reply reply = Reply.builder()
