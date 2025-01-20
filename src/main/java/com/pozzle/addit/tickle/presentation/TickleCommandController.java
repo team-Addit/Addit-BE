@@ -26,7 +26,7 @@ public class TickleCommandController {
     @Operation(summary = "티클 추가",
         description = "릴레이에 티클을 추가합니다."
     )
-    public ResponseEntity<?> createRelay(
+    public ResponseEntity<?> addTickle(
         @RequestPart TickleAddRequest request,
         @RequestPart MultipartFile file
     ) {
