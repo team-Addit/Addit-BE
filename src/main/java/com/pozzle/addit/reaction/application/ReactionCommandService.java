@@ -38,21 +38,21 @@ public class ReactionCommandService {
             Reaction reaction = reactionOptional.get();
             if (reaction.isSameType(reactionType)) {
                 tickle.removeReaction(reactionType);
-                relay.removeReaction(reactionType);
+                relay.removeReaction();
                 reactionRepository.delete(reaction);
                 return new ReactionPatchResponse("success remove reaction", reaction.getType());
             } else {
                 tickle.removeReaction(reaction.getType());
                 tickle.addReaction(reactionType);
-                relay.removeReaction(reaction.getType());
-                relay.addReaction(reactionType);
+                relay.removeReaction();
+                relay.addReaction();
                 reaction.changeType(reactionType);
                 return new ReactionPatchResponse("succes change reaction", reaction.getType());
             }
         }
 
         tickle.addReaction(reactionType);
-        relay.addReaction(reactionType);
+        relay.addReaction();
 
         Reaction reaction = Reaction.builder()
             .tickleId(tickle.getId())

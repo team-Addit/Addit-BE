@@ -1,7 +1,6 @@
 package com.pozzle.addit.tickle.presentation;
 
 import com.pozzle.addit.common.payload.Response;
-import com.pozzle.addit.relay.dto.response.RelayCreateResponse;
 import com.pozzle.addit.tickle.application.TickleCommandService;
 import com.pozzle.addit.tickle.dto.request.TickleAddRequest;
 import com.pozzle.addit.tickle.dto.response.TickleAddResponse;

@@ -54,7 +54,7 @@ public class RelayCommandService {
             .build();
         tickleRepository.save(tickle);
 
-        request.tags().stream().forEach(t -> {
+        request.tags().forEach(t -> {
             Tag tag = tagRepository.findByName(t)
                 .orElseGet(() -> tagRepository.save(
                         Tag.builder()
