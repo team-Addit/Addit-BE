@@ -21,10 +21,11 @@ public class SwaggerConfig {
         localServer.setUrl("http://localhost:8080");
 
         Server prodServer = new Server();
-        localServer.setUrl("https://port-0-addit-be-m64o37zm61224fba.sel4.cloudtype.app");
+        prodServer.setUrl("https://port-0-addit-be-m64o37zm61224fba.sel4.cloudtype.app");
+
 
         return new OpenAPI()
             .info(info)
-            .servers(List.of(localServer));
+            .servers(List.of(localServer, prodServer));
     }
 }
