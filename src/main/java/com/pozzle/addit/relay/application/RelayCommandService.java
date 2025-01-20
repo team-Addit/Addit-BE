@@ -11,6 +11,7 @@ import com.pozzle.addit.relay.repository.RelayTagRepository;
 import com.pozzle.addit.relay.repository.TagRepository;
 import com.pozzle.addit.tickle.entity.Tickle;
 import com.pozzle.addit.tickle.repository.TickleRepository;
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class RelayCommandService {
 
     private final RelayRepository relayRepository;

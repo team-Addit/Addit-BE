@@ -53,4 +53,9 @@ public class Relay {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    public void addTickle() {
+        this.ticklesCount++;
+        this.updatedAt = LocalDateTime.now();
+    }
 }
