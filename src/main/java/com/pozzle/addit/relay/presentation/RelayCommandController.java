@@ -30,7 +30,7 @@ public class RelayCommandController {
         @RequestPart MultipartFile file
     ) {
         RelayCreateResponse response = relayCommandService.createRelay(request, file);
-        return Response.ok(response);
+        return Response.ok("success create relay", response);
     }
 
 }

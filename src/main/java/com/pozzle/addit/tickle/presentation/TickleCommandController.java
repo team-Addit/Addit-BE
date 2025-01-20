@@ -31,6 +31,6 @@ public class TickleCommandController {
         @RequestPart MultipartFile file
     ) {
         TickleAddResponse response = tickleCommandService.addTickle(request, file);
-        return Response.ok(response);
+        return Response.ok("success add tickle", response);
     }
 }
