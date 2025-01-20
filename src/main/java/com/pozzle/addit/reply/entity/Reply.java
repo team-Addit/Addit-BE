@@ -1,12 +1,10 @@
-package com.pozzle.addit.tickle.entity;
+package com.pozzle.addit.reply.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -21,43 +19,21 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "tickles")
+@Table(name = "replies")
 @EntityListeners(AuditingEntityListener.class)
-public class Tickle {
+public class Reply {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long relayId;
+    private Long tickleId;
 
     private Long authorId;
 
-    @Column(length = 36, nullable = false, unique = true)
-    private String uuid;
-
-    @Column(length = 300, nullable = false)
-    private String description;
-
-    @Lob
-    private String file;
+    private String content;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
-    private int repliesCount;
-
-    private int reactionsCount;
-
-    private int funnyCount;
-
-    private int sadCount;
-
-    private int surpriseCount;
-
-    private int likeCount;
-
-    public void addReply() {
-        this.repliesCount++;
-    }
 }
