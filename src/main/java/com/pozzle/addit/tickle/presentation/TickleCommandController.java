@@ -4,6 +4,7 @@ import com.pozzle.addit.common.payload.Response;
 import com.pozzle.addit.relay.dto.response.RelayCreateResponse;
 import com.pozzle.addit.tickle.application.TickleCommandService;
 import com.pozzle.addit.tickle.dto.request.TickleAddRequest;
+import com.pozzle.addit.tickle.dto.response.TickleAddResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -29,7 +30,7 @@ public class TickleCommandController {
         @RequestPart TickleAddRequest request,
         @RequestPart MultipartFile file
     ) {
-        RelayCreateResponse response = tickleCommandService.addTickle(request, file);
+        TickleAddResponse response = tickleCommandService.addTickle(request, file);
         return Response.ok(response);
     }
 }
