@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +38,6 @@ public class RelayCommandController {
         return Response.ok("success create relay", response);
     }
 
-    //릴레이 상세정보를 수정한다
     @PutMapping(value = "/")
     @Operation(summary = "릴레이 수정",
         description = "릴레이를 수정합니다."
@@ -46,6 +47,18 @@ public class RelayCommandController {
     ) {
         String result = relayCommandService.updateRelay(request);
         return Response.ok("success update relay", result);
+    }
+
+    //릴레이를 삭제한다
+    @DeleteMapping(value = "/{relayId}")
+    @Operation(summary = "릴레이 삭제",
+        description = "릴레이를 삭제합니다."
+    )
+    public ResponseEntity<?> deleteRelay(
+        @PathVariable String relayId
+    ) {
+        relayCommandService.deleteRelay(relayId);
+        return Response.ok("success delete relay", null);
     }
 
 }

@@ -1,5 +1,8 @@
 package com.pozzle.addit.relay.application;
 
+import com.pozzle.addit.common.exception.ErrorCode;
+import com.pozzle.addit.common.exception.RestApiException;
+import com.pozzle.addit.relay.dto.event.RelayDeletedEvent;
 import com.pozzle.addit.relay.dto.request.RelayCreateRequest;
 import com.pozzle.addit.relay.dto.request.RelayUpdateRequest;
 import com.pozzle.addit.relay.dto.response.RelayCreateResponse;
@@ -17,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +33,7 @@ public class RelayCommandService {
     private final TickleRepository tickleRepository;
     private final RelayTagRepository relayTagRepository;
     private final TagRepository tagRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public RelayCreateResponse createRelay(RelayCreateRequest request, MultipartFile file) {
         //TODO file 변환 및 주소값 가져오기
@@ -80,15 +85,22 @@ public class RelayCommandService {
     }
 
     public String updateRelay(RelayUpdateRequest request) {
-        //릴레이 자체 정보 수정
         Relay relay = relayRepository.findByUuid(request.relayId())
-            .orElseThrow(() -> new RuntimeException("relay not found"));
+            .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
         relay.update(request);
 
-        //태그 수정
         relayTagRepository.deleteAllByRelayId(relay.getId());
         assignTagWithRelay(relay, request.tags());
 
         return request.relayId();
+    }
+
+    public void deleteRelay(String relayId) {
+        Relay relay = relayRepository.findByUuid(relayId)
+            .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
+        relayRepository.delete(relay);
+        relayTagRepository.deleteAllByRelayId(relay.getId());
+
+        eventPublisher.publishEvent(new RelayDeletedEvent(relay.getId()));
     }
 }
