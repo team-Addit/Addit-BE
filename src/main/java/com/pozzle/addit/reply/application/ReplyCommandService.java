@@ -5,10 +5,12 @@ import com.pozzle.addit.common.exception.RestApiException;
 import com.pozzle.addit.reply.dto.ReplyCreateRequest;
 import com.pozzle.addit.reply.entity.Reply;
 import com.pozzle.addit.reply.repository.ReplyRepository;
+import com.pozzle.addit.tickle.dto.event.TickleDeletedEvent;
 import com.pozzle.addit.tickle.entity.Tickle;
 import com.pozzle.addit.tickle.repository.TickleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,5 +36,10 @@ public class ReplyCommandService {
         replyRepository.save(reply);
 
         return reply.getId();
+    }
+
+    @EventListener
+    public void onTickleDeletedEvent(TickleDeletedEvent event) {
+        replyRepository.deleteAllByTickleId(event.tickleId());
     }
 }

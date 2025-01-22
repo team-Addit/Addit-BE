@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface ReactionRepository extends JpaRepository<Reaction, Long> {
 
     Optional<Reaction> findByAuthorIdAndTickleId(Long authorId, Long tickleId);
+
+    void deleteAllByTickleId(Long tickleId);
 }

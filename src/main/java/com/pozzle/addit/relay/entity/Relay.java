@@ -1,5 +1,6 @@
 package com.pozzle.addit.relay.entity;
 
+import com.pozzle.addit.relay.dto.request.RelayUpdateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -65,5 +66,10 @@ public class Relay {
 
     public void removeReaction() {
         this.reactionsCount--;
+    }
+
+    public void update(RelayUpdateRequest request) {
+        this.title = request.title();
+        this.description = request.relayDescription();
     }
 }

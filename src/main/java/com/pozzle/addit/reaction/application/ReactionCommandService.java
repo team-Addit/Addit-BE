@@ -8,11 +8,13 @@ import com.pozzle.addit.reaction.entity.ReactionType;
 import com.pozzle.addit.reaction.repository.ReactionRepository;
 import com.pozzle.addit.relay.entity.Relay;
 import com.pozzle.addit.relay.repository.RelayRepository;
+import com.pozzle.addit.tickle.dto.event.TickleDeletedEvent;
 import com.pozzle.addit.tickle.entity.Tickle;
 import com.pozzle.addit.tickle.repository.TickleRepository;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -62,5 +64,10 @@ public class ReactionCommandService {
         reactionRepository.save(reaction);
 
         return new ReactionPatchResponse("success add reaction", reaction.getType());
+    }
+
+    @EventListener
+    public void onTickleDeletedEvent(TickleDeletedEvent event) {
+        reactionRepository.deleteAllByTickleId(event.tickleId());
     }
 }
