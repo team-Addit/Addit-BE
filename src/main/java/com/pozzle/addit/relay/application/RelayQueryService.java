@@ -3,12 +3,15 @@ package com.pozzle.addit.relay.application;
 import com.pozzle.addit.common.exception.ErrorCode;
 import com.pozzle.addit.common.exception.RestApiException;
 import com.pozzle.addit.relay.dto.response.RelayInfoResponse;
+import com.pozzle.addit.relay.dto.response.TickleIdsResponse;
 import com.pozzle.addit.relay.entity.Relay;
 import com.pozzle.addit.relay.entity.RelayTag;
 import com.pozzle.addit.relay.entity.Tag;
 import com.pozzle.addit.relay.repository.RelayRepository;
 import com.pozzle.addit.relay.repository.RelayTagRepository;
 import com.pozzle.addit.relay.repository.TagRepository;
+import com.pozzle.addit.tickle.entity.Tickle;
+import com.pozzle.addit.tickle.repository.TickleRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,7 @@ public class RelayQueryService {
     private final RelayRepository relayRepository;
     private final RelayTagRepository relayTagRepository;
     private final TagRepository tagRepository;
+    private final TickleRepository tickleRepository;
 
 
     public RelayInfoResponse readRelayInfo(String relayId) {
@@ -41,5 +45,14 @@ public class RelayQueryService {
             .collect(Collectors.toList());
 
         return RelayInfoResponse.of(relay, tagNames, pinned);
+    }
+
+    public TickleIdsResponse readTickleIds(String relayId) {
+        Relay relay = relayRepository.findByUuid(relayId)
+            .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
+
+        List<Tickle> tickles = tickleRepository.findAllByRelayId(relay.getId());
+
+        return TickleIdsResponse.of(tickles);
     }
 }
