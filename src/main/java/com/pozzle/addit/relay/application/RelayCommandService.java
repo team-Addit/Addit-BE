@@ -1,6 +1,7 @@
 package com.pozzle.addit.relay.application;
 
 import com.pozzle.addit.relay.dto.request.RelayCreateRequest;
+import com.pozzle.addit.relay.dto.request.RelayUpdateRequest;
 import com.pozzle.addit.relay.dto.response.RelayCreateResponse;
 import com.pozzle.addit.relay.entity.Relay;
 import com.pozzle.addit.relay.entity.RelayStatus;
@@ -13,6 +14,7 @@ import com.pozzle.addit.tickle.entity.Tickle;
 import com.pozzle.addit.tickle.repository.TickleRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -54,7 +56,13 @@ public class RelayCommandService {
             .build();
         tickleRepository.save(tickle);
 
-        request.tags().forEach(t -> {
+        assignTagWithRelay(relay, request.tags());
+
+        return new RelayCreateResponse(relay.getUuid(), tickle.getUuid());
+    }
+
+    private void assignTagWithRelay(Relay relay, List<String> tags) {
+        tags.forEach(t -> {
             Tag tag = tagRepository.findByName(t)
                 .orElseGet(() -> tagRepository.save(
                         Tag.builder()
@@ -69,8 +77,18 @@ public class RelayCommandService {
                     .build()
             );
         });
-
-        return new RelayCreateResponse(relay.getUuid(), tickle.getUuid());
     }
 
+    public String updateRelay(RelayUpdateRequest request) {
+        //릴레이 자체 정보 수정
+        Relay relay = relayRepository.findByUuid(request.relayId())
+            .orElseThrow(() -> new RuntimeException("relay not found"));
+        relay.update(request);
+
+        //태그 수정
+        relayTagRepository.deleteAllByRelayId(relay.getId());
+        assignTagWithRelay(relay, request.tags());
+
+        return request.relayId();
+    }
 }

@@ -3,12 +3,15 @@ package com.pozzle.addit.relay.presentation;
 import com.pozzle.addit.common.payload.Response;
 import com.pozzle.addit.relay.application.RelayCommandService;
 import com.pozzle.addit.relay.dto.request.RelayCreateRequest;
+import com.pozzle.addit.relay.dto.request.RelayUpdateRequest;
 import com.pozzle.addit.relay.dto.response.RelayCreateResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +34,18 @@ public class RelayCommandController {
     ) {
         RelayCreateResponse response = relayCommandService.createRelay(request, file);
         return Response.ok("success create relay", response);
+    }
+
+    //릴레이 상세정보를 수정한다
+    @PutMapping(value = "/")
+    @Operation(summary = "릴레이 수정",
+        description = "릴레이를 수정합니다."
+    )
+    public ResponseEntity<?> updateRelay(
+        @RequestBody RelayUpdateRequest request
+    ) {
+        String result = relayCommandService.updateRelay(request);
+        return Response.ok("success update relay", result);
     }
 
 }

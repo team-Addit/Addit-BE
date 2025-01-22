@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface RelayTagRepository extends JpaRepository<RelayTag, Long> {
 
     List<RelayTag> findAllByRelayId(Long relayId);
+
+    void deleteAllByRelayId(Long relayId);
 }
