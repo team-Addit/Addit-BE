@@ -24,41 +24,41 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class RelayCommandController {
 
-    private final RelayCommandService relayCommandService;
+  private final RelayCommandService relayCommandService;
 
-    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "릴레이 생성",
-        description = "릴레이를 생성합니다."
-    )
-    public ResponseEntity<?> createRelay(
-        @RequestPart RelayCreateRequest request,
-        @RequestPart MultipartFile file
-    ) {
-        RelayCreateResponse response = relayCommandService.createRelay(request, file);
-        return Response.ok("success create relay", response);
-    }
+  @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Operation(summary = "릴레이 생성",
+      description = "릴레이를 생성합니다."
+  )
+  public ResponseEntity<?> createRelay(
+      @RequestPart RelayCreateRequest request,
+      @RequestPart MultipartFile file
+  ) {
+    RelayCreateResponse response = relayCommandService.createRelay(request, file);
+    return Response.ok("success create relay", response);
+  }
 
-    @PutMapping(value = "/")
-    @Operation(summary = "릴레이 수정",
-        description = "릴레이를 수정합니다."
-    )
-    public ResponseEntity<?> updateRelay(
-        @RequestBody RelayUpdateRequest request
-    ) {
-        String result = relayCommandService.updateRelay(request);
-        return Response.ok("success update relay", result);
-    }
+  @PutMapping(value = "/")
+  @Operation(summary = "릴레이 수정",
+      description = "릴레이를 수정합니다."
+  )
+  public ResponseEntity<?> updateRelay(
+      @RequestBody RelayUpdateRequest request
+  ) {
+    String result = relayCommandService.updateRelay(request);
+    return Response.ok("success update relay", result);
+  }
 
-    //릴레이를 삭제한다
-    @DeleteMapping(value = "/{relayId}")
-    @Operation(summary = "릴레이 삭제",
-        description = "릴레이를 삭제합니다."
-    )
-    public ResponseEntity<?> deleteRelay(
-        @PathVariable String relayId
-    ) {
-        relayCommandService.deleteRelay(relayId);
-        return Response.ok("success delete relay", null);
-    }
+  //릴레이를 삭제한다
+  @DeleteMapping(value = "/{relayId}")
+  @Operation(summary = "릴레이 삭제",
+      description = "릴레이를 삭제합니다."
+  )
+  public ResponseEntity<?> deleteRelay(
+      @PathVariable String relayId
+  ) {
+    relayCommandService.deleteRelay(relayId);
+    return Response.ok("success delete relay", null);
+  }
 
 }
