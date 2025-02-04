@@ -29,9 +29,15 @@ public class MvpCommandController {
       HttpServletRequest request,
       @RequestBody SessionRequest sessionRequest
   ) {
-    HttpSession session = request.getSession(); // 세션이 없으면 생성
-    session.setAttribute("username", sessionRequest.nickname()); // 세션 저장
-    return Response.ok("success create session", null);
+    String userId = mvpCommandService.createUser(sessionRequest);
+    String nickname = sessionRequest.nickname();
+
+    HttpSession session = request.getSession();
+    session.setAttribute("nickname", nickname);
+    session.setAttribute("userId", userId);
+
+    return Response.ok("success create session\n"
+        + "nickname : " + nickname, null);
   }
 
 }

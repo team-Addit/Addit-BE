@@ -1,6 +1,7 @@
 package com.pozzle.addit.mvp.controller;
 
 import com.pozzle.addit.common.payload.Response;
+import com.pozzle.addit.mvp.dto.response.SessionResponse;
 import com.pozzle.addit.mvp.util.SessionValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,13 +26,13 @@ public class MvpQueryController {
   public ResponseEntity<?> readSession(
       HttpServletRequest request
   ) {
-    String username;
+    SessionResponse sessionResponse;
     try {
-      username = sessionValidator.getUsername(request);
+      sessionResponse = sessionValidator.readSession(request);
     } catch (RuntimeException e) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("no session");
     }
-    return Response.ok("username : " + username, null);
+    return Response.ok(sessionResponse);
   }
 
 }
