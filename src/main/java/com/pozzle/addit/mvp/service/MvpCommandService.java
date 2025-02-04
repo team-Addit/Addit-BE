@@ -1,8 +1,11 @@
 package com.pozzle.addit.mvp.service;
 
+import com.pozzle.addit.common.exception.ErrorCode;
+import com.pozzle.addit.common.exception.RestApiException;
 import com.pozzle.addit.mvp.dto.request.SessionRequest;
 import com.pozzle.addit.mvp.entity.MvpUser;
 import com.pozzle.addit.mvp.repository.MvpUserRepository;
+import com.pozzle.addit.mvp.util.SessionValidator;
 import com.pozzle.addit.relay.dto.request.RelayCreateRequest;
 import com.pozzle.addit.relay.dto.response.RelayCreateResponse;
 import com.pozzle.addit.relay.entity.Relay;
@@ -12,6 +15,8 @@ import com.pozzle.addit.relay.entity.Tag;
 import com.pozzle.addit.relay.repository.RelayRepository;
 import com.pozzle.addit.relay.repository.RelayTagRepository;
 import com.pozzle.addit.relay.repository.TagRepository;
+import com.pozzle.addit.tickle.dto.request.TickleAddRequest;
+import com.pozzle.addit.tickle.dto.response.TickleAddResponse;
 import com.pozzle.addit.tickle.entity.Tickle;
 import com.pozzle.addit.tickle.repository.TickleRepository;
 import jakarta.servlet.http.HttpSession;
@@ -28,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 public class MvpCommandService {
 
+  private final SessionValidator sessionValidator;
   private final MvpUserRepository mvpUserRepository;
   private final RelayRepository relayRepository;
   private final TickleRepository tickleRepository;
@@ -48,7 +54,7 @@ public class MvpCommandService {
       RelayCreateRequest request,
       MultipartFile file) {
 
-    String uuid = (String) session.getAttribute("userId");
+    String uuid = sessionValidator.getUserId(session);
     Long authorId = mvpUserRepository.findIdByNickname(uuid);
 
     //TODO file 변환 및 주소값 가져오기
@@ -98,4 +104,29 @@ public class MvpCommandService {
     });
   }
 
+  public TickleAddResponse addTickle(HttpSession session, TickleAddRequest request,
+      MultipartFile file) {
+
+    String uuid = sessionValidator.getUserId(session);
+    Long authorId = mvpUserRepository.findIdByNickname(uuid);
+
+    //TODO file 변환 및 주소값 가져오기
+    String fileUrl = "file url";
+
+    Relay relay = relayRepository.findByUuid(request.relayId())
+        .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
+
+    relay.addTickle();
+
+    Tickle tickle = Tickle.builder()
+        .relayId(relay.getId())
+        .authorId(authorId)
+        .uuid(UUID.randomUUID().toString())
+        .description(request.tickleDescription())
+        .file(fileUrl)
+        .build();
+    tickleRepository.save(tickle);
+
+    return new TickleAddResponse(relay.getUuid(), tickle.getUuid());
+  }
 }

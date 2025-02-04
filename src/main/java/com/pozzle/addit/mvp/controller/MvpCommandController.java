@@ -5,6 +5,8 @@ import com.pozzle.addit.mvp.dto.request.SessionRequest;
 import com.pozzle.addit.mvp.service.MvpCommandService;
 import com.pozzle.addit.relay.dto.request.RelayCreateRequest;
 import com.pozzle.addit.relay.dto.response.RelayCreateResponse;
+import com.pozzle.addit.tickle.dto.request.TickleAddRequest;
+import com.pozzle.addit.tickle.dto.response.TickleAddResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +56,19 @@ public class MvpCommandController {
   ) {
     RelayCreateResponse response = mvpCommandService.createRelay(session, request, file);
     return Response.ok("success create relay", response);
+  }
+
+  @PostMapping(value = "/tickles", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Operation(summary = "티클 추가",
+      description = "릴레이에 티클을 추가합니다."
+  )
+  public ResponseEntity<?> addTickle(
+      HttpSession session,
+      @RequestPart TickleAddRequest request,
+      @RequestPart MultipartFile file
+  ) {
+    TickleAddResponse response = mvpCommandService.addTickle(session, request, file);
+    return Response.ok("success add tickle", response);
   }
 
 }
