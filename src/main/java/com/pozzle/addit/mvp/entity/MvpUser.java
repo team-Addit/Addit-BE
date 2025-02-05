@@ -27,4 +27,6 @@ public class MvpUser {
   private String uuid;
 
   private String nickname;
+
+  private String image;
 }

@@ -26,53 +26,53 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class RelayQueryService {
 
-    private final RelayRepository relayRepository;
-    private final RelayTagRepository relayTagRepository;
-    private final TagRepository tagRepository;
-    private final TickleRepository tickleRepository;
+  private final RelayRepository relayRepository;
+  private final RelayTagRepository relayTagRepository;
+  private final TagRepository tagRepository;
+  private final TickleRepository tickleRepository;
 
 
-    public RelayInfoResponse readRelayInfo(String relayId) {
-        boolean pinned = false;
+  public RelayInfoResponse readRelayInfo(String relayId) {
+    boolean pinned = false;
 
-        Relay relay = relayRepository.findByUuid(relayId)
-            .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
+    Relay relay = relayRepository.findByUuid(relayId)
+        .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
 
-        List<String> tagNames = relayTagRepository.findAllByRelayId(relay.getId()).stream()
-            .map(RelayTag::getTagId)
-            .map(tagRepository::findById)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .map(Tag::getName)
-            .collect(Collectors.toList());
+    List<String> tagNames = relayTagRepository.findAllByRelayId(relay.getId()).stream()
+        .map(RelayTag::getTagId)
+        .map(tagRepository::findById)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(Tag::getName)
+        .toList();
 
-        return RelayInfoResponse.of(relay, tagNames, pinned);
-    }
+    return RelayInfoResponse.of(relay, tagNames, pinned);
+  }
 
-    public TickleIdsResponse readTickleIds(String relayId) {
-        Relay relay = relayRepository.findByUuid(relayId)
-            .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
+  public TickleIdsResponse readTickleIds(String relayId) {
+    Relay relay = relayRepository.findByUuid(relayId)
+        .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
 
-        List<Tickle> tickles = tickleRepository.findAllByRelayId(relay.getId());
+    List<Tickle> tickles = tickleRepository.findAllByRelayId(relay.getId());
 
-        return TickleIdsResponse.of(tickles);
-    }
+    return TickleIdsResponse.of(tickles);
+  }
 
-    public TickleThumbnailsResponse getAroundThumbnails(String tickleId, int items) {
-        Tickle targetTickle = tickleRepository.findByUuid(tickleId)
-            .orElseThrow(() -> new RestApiException(ErrorCode.TICKLE_NOT_FOUND));
-        Relay relay = relayRepository.findById(targetTickle.getRelayId())
-            .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
-        List<Tickle> tickles = tickleRepository.findAllByRelayId(relay.getId());
+  public TickleThumbnailsResponse getAroundThumbnails(String tickleId, int items) {
+    Tickle targetTickle = tickleRepository.findByUuid(tickleId)
+        .orElseThrow(() -> new RestApiException(ErrorCode.TICKLE_NOT_FOUND));
+    Relay relay = relayRepository.findById(targetTickle.getRelayId())
+        .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
+    List<Tickle> tickles = tickleRepository.findAllByRelayId(relay.getId());
 
-        int targetIndex = tickles.indexOf(targetTickle);
-        int startIndex = Math.max(0, targetIndex - items);
-        int endIndex = Math.min(tickles.size(), targetIndex + items + 1);
-        List<Tickle> result = tickles.subList(startIndex, endIndex);
+    int targetIndex = tickles.indexOf(targetTickle);
+    int startIndex = Math.max(0, targetIndex - items);
+    int endIndex = Math.min(tickles.size(), targetIndex + items + 1);
+    List<Tickle> result = tickles.subList(startIndex, endIndex);
 
-        List<TickleThumbnail> thumbnails = result.stream()
-            .map(TickleThumbnail::of)
-            .collect(Collectors.toList());
-        return TickleThumbnailsResponse.of(thumbnails);
-    }
+    List<TickleThumbnail> thumbnails = result.stream()
+        .map(TickleThumbnail::of)
+        .collect(Collectors.toList());
+    return TickleThumbnailsResponse.of(thumbnails);
+  }
 }

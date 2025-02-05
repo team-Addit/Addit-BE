@@ -9,7 +9,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TickleRepository extends JpaRepository<Tickle, Long> {
 
-    Optional<Tickle> findByUuid(String uuid);
+  Optional<Tickle> findByUuid(String uuid);
 
-    List<Tickle> findAllByRelayId(Long relayId);
+  List<Tickle> findAllByRelayId(Long relayId);
+
+  List<Tickle> findTop3ByRelayIdOrderByIdAtAsc(Long relayId);
 }
