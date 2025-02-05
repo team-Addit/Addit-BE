@@ -6,6 +6,7 @@ import com.pozzle.addit.mvp.dto.request.SessionRequest;
 import com.pozzle.addit.mvp.entity.MvpUser;
 import com.pozzle.addit.mvp.repository.MvpUserRepository;
 import com.pozzle.addit.mvp.util.SessionValidator;
+import com.pozzle.addit.reaction.entity.ReactionType;
 import com.pozzle.addit.relay.dto.request.RelayCreateRequest;
 import com.pozzle.addit.relay.dto.response.RelayCreateResponse;
 import com.pozzle.addit.relay.entity.Relay;
@@ -128,5 +129,11 @@ public class MvpCommandService {
     tickleRepository.save(tickle);
 
     return new TickleAddResponse(relay.getUuid(), tickle.getUuid());
+  }
+
+  public void addLike(String tickleId) {
+    Tickle tickle = tickleRepository.findByUuid(tickleId)
+        .orElseThrow(() -> new RestApiException(ErrorCode.TICKLE_NOT_FOUND));
+    tickle.addReaction(ReactionType.LIKE);
   }
 }

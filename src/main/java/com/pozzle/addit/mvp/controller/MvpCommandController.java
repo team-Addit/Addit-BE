@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,6 +71,17 @@ public class MvpCommandController {
   ) {
     TickleAddResponse response = mvpCommandService.addTickle(session, request, file);
     return Response.ok("success add tickle", response);
+  }
+
+  @GetMapping(value = "/tickles/{tickleId}/like")
+  @Operation(summary = "좋아요",
+      description = "티클에 좋아요를 추가합니다. 빼는 기능은 없습니다."
+  )
+  public ResponseEntity<?> addLike(
+      @PathVariable String tickleId
+  ) {
+    mvpCommandService.addLike(tickleId);
+    return Response.ok("success add like", null);
   }
 
 }
