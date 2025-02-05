@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "E000-1", "해당 유저를 찾을 수 없습니다."),
+
     RELAY_NOT_FOUND(HttpStatus.NOT_FOUND, "E001-1", "해당 릴레이를 찾을 수 없습니다."),
 
     TICKLE_NOT_FOUND(HttpStatus.NOT_FOUND, "E002-1", "해당 티클을 찾을 수 없습니다."),

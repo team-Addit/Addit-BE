@@ -1,7 +1,11 @@
 package com.pozzle.addit.mvp.service;
 
+import com.pozzle.addit.common.exception.ErrorCode;
+import com.pozzle.addit.common.exception.RestApiException;
 import com.pozzle.addit.mvp.dto.dto.RelayPreviewDto;
+import com.pozzle.addit.mvp.dto.dto.TicklePreviewDto;
 import com.pozzle.addit.mvp.dto.response.RelayPreviewsResponse;
+import com.pozzle.addit.mvp.dto.response.TicklePreviewsResponse;
 import com.pozzle.addit.mvp.entity.MvpUser;
 import com.pozzle.addit.mvp.repository.MvpUserRepository;
 import com.pozzle.addit.relay.entity.Relay;
@@ -63,4 +67,22 @@ public class MvpQueryService {
     return RelayPreviewsResponse.of(previews);
   }
 
+  public TicklePreviewsResponse readTicklePreviews(String relayId) {
+    Relay relay = relayRepository.findByUuid(relayId)
+        .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
+
+    List<Tickle> tickles = tickleRepository.findTop5ByRelayIdOrderByIdAtDesc(
+        relay.getId());
+
+    List<TicklePreviewDto> previews = new ArrayList<>();
+
+    for (Tickle t : tickles) {
+      MvpUser user = mvpUserRepository.findById(t.getAuthorId())
+          .orElseThrow(() -> new RestApiException(ErrorCode.USER_NOT_FOUND));
+
+      previews.add(TicklePreviewDto.of(t, user));
+    }
+
+    return TicklePreviewsResponse.of(previews);
+  }
 }

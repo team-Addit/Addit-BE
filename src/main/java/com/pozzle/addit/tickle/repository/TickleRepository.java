@@ -14,4 +14,6 @@ public interface TickleRepository extends JpaRepository<Tickle, Long> {
   List<Tickle> findAllByRelayId(Long relayId);
 
   List<Tickle> findTop3ByRelayIdOrderByIdAtAsc(Long relayId);
+
+  List<Tickle> findTop5ByRelayIdOrderByIdAtDesc(Long id);
 }
