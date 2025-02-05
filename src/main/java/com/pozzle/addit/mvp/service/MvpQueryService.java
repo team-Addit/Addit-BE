@@ -46,15 +46,18 @@ public class MvpQueryService {
           .map(Tag::getName)
           .toList();
 
-      List<String> profileImages = tickles.stream()
+      List<MvpUser> users = tickles.stream()
           .map(Tickle::getAuthorId)
           .map(mvpUserRepository::findById)
           .map(optional -> optional.orElse(null)) // 없는 경우 null 반환
           .filter(Objects::nonNull)
+          .toList();
+
+      List<String> profileImages = users.stream()
           .map(MvpUser::getImage)
           .toList();
 
-      previews.add(RelayPreviewDto.of(r, tags, profileImages));
+      previews.add(RelayPreviewDto.of(r, tags, tickles.getFirst(), users));
     }
 
     return RelayPreviewsResponse.of(previews);
