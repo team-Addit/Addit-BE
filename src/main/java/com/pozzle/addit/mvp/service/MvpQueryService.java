@@ -6,6 +6,7 @@ import com.pozzle.addit.mvp.dto.dto.RelayPreviewDto;
 import com.pozzle.addit.mvp.dto.dto.TicklePreviewDto;
 import com.pozzle.addit.mvp.dto.response.RelayPreviewsResponse;
 import com.pozzle.addit.mvp.dto.response.TicklePreviewsResponse;
+import com.pozzle.addit.mvp.dto.response.TickleViewResponse;
 import com.pozzle.addit.mvp.entity.MvpUser;
 import com.pozzle.addit.mvp.repository.MvpUserRepository;
 import com.pozzle.addit.relay.dto.response.TickleThumbnail;
@@ -98,5 +99,15 @@ public class MvpQueryService {
         .toList();
 
     return TickleThumbnailsResponse.of(thumbnails);
+  }
+
+  public TickleViewResponse readTickle(String tickleId) {
+    Tickle tickle = tickleRepository.findByUuid(tickleId)
+        .orElseThrow(() -> new RestApiException(ErrorCode.TICKLE_NOT_FOUND));
+
+    MvpUser user = mvpUserRepository.findById(tickle.getAuthorId())
+        .orElseThrow(() -> new RestApiException(ErrorCode.USER_NOT_FOUND));
+
+    return TickleViewResponse.of(tickle, user);
   }
 }

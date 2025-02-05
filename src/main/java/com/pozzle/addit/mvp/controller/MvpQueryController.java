@@ -4,6 +4,7 @@ import com.pozzle.addit.common.payload.Response;
 import com.pozzle.addit.mvp.dto.response.RelayPreviewsResponse;
 import com.pozzle.addit.mvp.dto.response.SessionResponse;
 import com.pozzle.addit.mvp.dto.response.TicklePreviewsResponse;
+import com.pozzle.addit.mvp.dto.response.TickleViewResponse;
 import com.pozzle.addit.mvp.service.MvpQueryService;
 import com.pozzle.addit.mvp.util.SessionValidator;
 import com.pozzle.addit.relay.dto.response.TickleThumbnailsResponse;
@@ -65,7 +66,7 @@ public class MvpQueryController {
     return Response.ok(response);
   }
 
-  @GetMapping(value = "/{relayId}/tickles/thumbnail")
+  @GetMapping(value = "/relays/{relayId}/tickles/thumbnail")
   @Operation(summary = "특정 릴레이의 티클 썸네일 목록",
       description = "릴레이에서 최신순으로 전체 티클들의 썸네일 목록을 불러옵니다."
   )
@@ -73,6 +74,17 @@ public class MvpQueryController {
       @PathVariable String relayId
   ) {
     TickleThumbnailsResponse response = mvpQueryService.readTickleThumbnailsFromRelay(relayId);
+    return Response.ok(response);
+  }
+
+  @GetMapping(value = "/tickles/{tickleId}")
+  @Operation(summary = "티클 조회",
+      description = "티클을 조회합니다."
+  )
+  public ResponseEntity<?> readTickle(
+      @PathVariable String tickleId
+  ) {
+    TickleViewResponse response = mvpQueryService.readTickle(tickleId);
     return Response.ok(response);
   }
 
