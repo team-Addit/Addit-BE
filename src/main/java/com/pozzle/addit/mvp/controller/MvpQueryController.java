@@ -6,6 +6,7 @@ import com.pozzle.addit.mvp.dto.response.SessionResponse;
 import com.pozzle.addit.mvp.dto.response.TicklePreviewsResponse;
 import com.pozzle.addit.mvp.service.MvpQueryService;
 import com.pozzle.addit.mvp.util.SessionValidator;
+import com.pozzle.addit.relay.dto.response.TickleThumbnailsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +62,17 @@ public class MvpQueryController {
       @PathVariable String relayId
   ) {
     TicklePreviewsResponse response = mvpQueryService.readTicklePreviews(relayId);
+    return Response.ok(response);
+  }
+
+  @GetMapping(value = "/{relayId}/tickles/thumbnail")
+  @Operation(summary = "특정 릴레이의 티클 썸네일 목록",
+      description = "릴레이에서 최신순으로 전체 티클들의 썸네일 목록을 불러옵니다."
+  )
+  public ResponseEntity<?> readTickleThumbnailsFromRelay(
+      @PathVariable String relayId
+  ) {
+    TickleThumbnailsResponse response = mvpQueryService.readTickleThumbnailsFromRelay(relayId);
     return Response.ok(response);
   }
 

@@ -8,6 +8,8 @@ import com.pozzle.addit.mvp.dto.response.RelayPreviewsResponse;
 import com.pozzle.addit.mvp.dto.response.TicklePreviewsResponse;
 import com.pozzle.addit.mvp.entity.MvpUser;
 import com.pozzle.addit.mvp.repository.MvpUserRepository;
+import com.pozzle.addit.relay.dto.response.TickleThumbnail;
+import com.pozzle.addit.relay.dto.response.TickleThumbnailsResponse;
 import com.pozzle.addit.relay.entity.Relay;
 import com.pozzle.addit.relay.entity.RelayTag;
 import com.pozzle.addit.relay.entity.Tag;
@@ -84,5 +86,17 @@ public class MvpQueryService {
     }
 
     return TicklePreviewsResponse.of(previews);
+  }
+
+  public TickleThumbnailsResponse readTickleThumbnailsFromRelay(String relayId) {
+    Relay relay = relayRepository.findByUuid(relayId)
+        .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
+    List<Tickle> tickles = tickleRepository.findAllByRelayIdAtDesc(relay.getId());
+
+    List<TickleThumbnail> thumbnails = tickles.stream()
+        .map(TickleThumbnail::of)
+        .toList();
+
+    return TickleThumbnailsResponse.of(thumbnails);
   }
 }
