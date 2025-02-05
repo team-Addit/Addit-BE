@@ -6,7 +6,9 @@ public record RelayCreateRequest(
     String title,
     List<String> tags,
     String relayDescription,
-    String tickleDescription
+    String tickleDescription,
+    String userImage,
+    String userName
     ) {
 
 }

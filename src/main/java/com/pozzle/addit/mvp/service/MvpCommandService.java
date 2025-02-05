@@ -20,7 +20,6 @@ import com.pozzle.addit.tickle.dto.request.TickleAddRequest;
 import com.pozzle.addit.tickle.dto.response.TickleAddResponse;
 import com.pozzle.addit.tickle.entity.Tickle;
 import com.pozzle.addit.tickle.repository.TickleRepository;
-import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,18 +50,16 @@ public class MvpCommandService {
   }
 
   public RelayCreateResponse createRelay(
-      HttpSession session,
       RelayCreateRequest request,
       MultipartFile file) {
 
-    String uuid = sessionValidator.getUserId(session);
-    Long authorId = mvpUserRepository.findIdByNickname(uuid);
+    MvpUser user = createUser(request.userName(), request.userImage());
 
     //TODO file 변환 및 주소값 가져오기
     String fileUrl = "file url";
 
     Relay relay = Relay.builder()
-        .authorId(authorId)
+        .authorId(user.getId())
         .uuid(UUID.randomUUID().toString())
         .title(request.title())
         .description(request.relayDescription())
@@ -75,7 +72,7 @@ public class MvpCommandService {
 
     Tickle tickle = Tickle.builder()
         .relayId(relay.getId())
-        .authorId(authorId)
+        .authorId(user.getId())
         .uuid(UUID.randomUUID().toString())
         .description(request.tickleDescription())
         .file(fileUrl)
@@ -105,11 +102,9 @@ public class MvpCommandService {
     });
   }
 
-  public TickleAddResponse addTickle(HttpSession session, TickleAddRequest request,
-      MultipartFile file) {
+  public TickleAddResponse addTickle(TickleAddRequest request, MultipartFile file) {
 
-    String uuid = sessionValidator.getUserId(session);
-    Long authorId = mvpUserRepository.findIdByNickname(uuid);
+    MvpUser user = createUser(request.userName(), request.userImage());
 
     //TODO file 변환 및 주소값 가져오기
     String fileUrl = "file url";
@@ -121,7 +116,7 @@ public class MvpCommandService {
 
     Tickle tickle = Tickle.builder()
         .relayId(relay.getId())
-        .authorId(authorId)
+        .authorId(user.getId())
         .uuid(UUID.randomUUID().toString())
         .description(request.tickleDescription())
         .file(fileUrl)
@@ -129,6 +124,16 @@ public class MvpCommandService {
     tickleRepository.save(tickle);
 
     return new TickleAddResponse(relay.getUuid(), tickle.getUuid());
+  }
+
+  private MvpUser createUser(String name, String image) {
+    MvpUser user = MvpUser.builder()
+        .uuid(UUID.randomUUID().toString())
+        .nickname(name)
+        .image(image)
+        .build();
+    mvpUserRepository.save(user);
+    return user;
   }
 
   public void addLike(String tickleId) {
