@@ -43,7 +43,7 @@ public class MvpQueryService {
 
     List<RelayPreviewDto> previews = new ArrayList<>();
     for (Relay r : relays) {
-      List<Tickle> tickles = tickleRepository.findTop3ByRelayIdOrderByIdAtAsc(r.getId());
+      List<Tickle> tickles = tickleRepository.findTop3ByRelayIdOrderByIdAsc(r.getId());
 
       List<String> tags = relayTagRepository.findAllByRelayId(r.getId()).stream()
           .map(RelayTag::getTagId)
@@ -74,7 +74,7 @@ public class MvpQueryService {
     Relay relay = relayRepository.findByUuid(relayId)
         .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
 
-    List<Tickle> tickles = tickleRepository.findTop5ByRelayIdOrderByIdAtDesc(
+    List<Tickle> tickles = tickleRepository.findTop5ByRelayIdOrderByIdDesc(
         relay.getId());
 
     List<TicklePreviewDto> previews = new ArrayList<>();
@@ -92,7 +92,7 @@ public class MvpQueryService {
   public TickleThumbnailsResponse readTickleThumbnailsFromRelay(String relayId) {
     Relay relay = relayRepository.findByUuid(relayId)
         .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
-    List<Tickle> tickles = tickleRepository.findAllByRelayIdAtDesc(relay.getId());
+    List<Tickle> tickles = tickleRepository.findByRelayIdOrderByIdDesc(relay.getId());
 
     List<TickleThumbnail> thumbnails = tickles.stream()
         .map(TickleThumbnail::of)
