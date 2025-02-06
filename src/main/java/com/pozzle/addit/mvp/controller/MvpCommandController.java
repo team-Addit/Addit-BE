@@ -46,7 +46,8 @@ public class MvpCommandController {
 
   @PostMapping(value = "/relays", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Operation(summary = "릴레이 생성",
-      description = "릴레이를 생성합니다."
+      description = "릴레이를 생성합니다.\n"
+          + "* 파일의 최대 크기는 10MB입니다."
   )
   public ResponseEntity<?> createRelay(
       @RequestPart RelayCreateRequest request,
@@ -58,7 +59,8 @@ public class MvpCommandController {
 
   @PostMapping(value = "/tickles", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Operation(summary = "티클 추가",
-      description = "릴레이에 티클을 추가합니다."
+      description = "릴레이에 티클을 추가합니다.\n"
+          + "* 파일의 최대 크기는 10MB입니다."
   )
   public ResponseEntity<?> addTickle(
       @RequestPart TickleAddRequest request,
