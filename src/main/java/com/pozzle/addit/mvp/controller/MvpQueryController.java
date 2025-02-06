@@ -1,8 +1,7 @@
 package com.pozzle.addit.mvp.controller;
 
 import com.pozzle.addit.common.payload.Response;
-import com.pozzle.addit.mvp.dto.response.RelayPreviewsResponse;
-import com.pozzle.addit.mvp.dto.response.TicklePreviewsResponse;
+import com.pozzle.addit.mvp.dto.response.MainResponse;
 import com.pozzle.addit.mvp.dto.response.TickleViewResponse;
 import com.pozzle.addit.mvp.service.MvpQueryService;
 import com.pozzle.addit.mvp.util.SessionValidator;
@@ -40,26 +39,15 @@ public class MvpQueryController {
 //    return Response.ok(sessionResponse);
 //  }
 
-  @GetMapping(value = "/main/relays")
-  @Operation(summary = "메인페이지 릴레이 랜덤 조회",
-      description = "메인페이지에서 릴레이를 랜덤으로 size개 만큼 조회합니다."
-          + "릴레이 썸네일과 간단한 정보를 제공합니다."
+  @GetMapping(value = "/main")
+  @Operation(summary = "메인페이지 조회",
+      description = "메인페이지에서 릴레이를 랜덤으로 size개 만큼 조회합니다.\n"
+          + "각 릴레이마다 최신순의 티클을 5개씩 제공합니다."
   )
-  public ResponseEntity<?> readRelayPreviews(
+  public ResponseEntity<?> readMain(
       @RequestParam int size
   ) {
-    RelayPreviewsResponse response = mvpQueryService.readRelayPreviews(size);
-    return Response.ok(response);
-  }
-
-  @GetMapping(value = "/main/{relayId}/tickles")
-  @Operation(summary = "릴레이의 최신 티클 미리보기",
-      description = "특정 릴레이에 속한 티클의 미리보기를 최신순으로 5개 조회합니다."
-  )
-  public ResponseEntity<?> readTicklePreviews(
-      @PathVariable String relayId
-  ) {
-    TicklePreviewsResponse response = mvpQueryService.readTicklePreviews(relayId);
+    MainResponse response = mvpQueryService.readMain(size);
     return Response.ok(response);
   }
 
