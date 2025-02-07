@@ -10,6 +10,8 @@ public enum ErrorCode {
     RELAY_NOT_FOUND(HttpStatus.NOT_FOUND, "E001-1", "해당 릴레이를 찾을 수 없습니다."),
 
     TICKLE_NOT_FOUND(HttpStatus.NOT_FOUND, "E002-1", "해당 티클을 찾을 수 없습니다."),
+
+    FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "E003-1", "파일 업로드에 실패했습니다."),
     ;
 
     private final HttpStatus httpStatus;

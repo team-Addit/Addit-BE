@@ -2,10 +2,10 @@ package com.pozzle.addit.mvp.service;
 
 import com.pozzle.addit.common.exception.ErrorCode;
 import com.pozzle.addit.common.exception.RestApiException;
+import com.pozzle.addit.common.util.GcsMediaManager;
 import com.pozzle.addit.mvp.dto.request.SessionRequest;
 import com.pozzle.addit.mvp.entity.MvpUser;
 import com.pozzle.addit.mvp.repository.MvpUserRepository;
-import com.pozzle.addit.mvp.util.SessionValidator;
 import com.pozzle.addit.reaction.entity.ReactionType;
 import com.pozzle.addit.relay.dto.request.RelayCreateRequest;
 import com.pozzle.addit.relay.dto.response.RelayCreateResponse;
@@ -33,112 +33,110 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 public class MvpCommandService {
 
-  private final SessionValidator sessionValidator;
-  private final MvpUserRepository mvpUserRepository;
-  private final RelayRepository relayRepository;
-  private final TickleRepository tickleRepository;
-  private final RelayTagRepository relayTagRepository;
-  private final TagRepository tagRepository;
+    private final MvpUserRepository mvpUserRepository;
+    private final RelayRepository relayRepository;
+    private final TickleRepository tickleRepository;
+    private final RelayTagRepository relayTagRepository;
+    private final TagRepository tagRepository;
+    private final GcsMediaManager mediaManager;
 
-  public String createUser(SessionRequest sessionRequest) {
-    MvpUser user = MvpUser.builder()
-        .uuid((UUID.randomUUID().toString()))
-        .nickname(sessionRequest.nickname())
-        .build();
-    mvpUserRepository.save(user);
-    return user.getUuid();
-  }
+    public String createUser(SessionRequest sessionRequest) {
+        MvpUser user = MvpUser.builder()
+            .uuid((UUID.randomUUID().toString()))
+            .nickname(sessionRequest.nickname())
+            .build();
+        mvpUserRepository.save(user);
+        return user.getUuid();
+    }
 
-  public RelayCreateResponse createRelay(
-      RelayCreateRequest request,
-      MultipartFile file) {
+    public RelayCreateResponse createRelay(
+        RelayCreateRequest request,
+        MultipartFile file) {
 
-    MvpUser user = createUser(request.userName(), request.userImage());
+        MvpUser user = createUser(request.userName(), request.userImage());
 
-    //TODO file 변환 및 주소값 가져오기
-    String fileUrl = "file url";
+        String fileUrl = mediaManager.saveMediaFile(file);
 
-    Relay relay = Relay.builder()
-        .authorId(user.getId())
-        .uuid(UUID.randomUUID().toString())
-        .title(request.title())
-        .description(request.relayDescription())
-        .reactionsCount(0)
-        .ticklesCount(1)
-        .status(RelayStatus.ACTIVE)
-        .updatedAt(LocalDateTime.now())
-        .build();
-    relayRepository.save(relay);
+        Relay relay = Relay.builder()
+            .authorId(user.getId())
+            .uuid(UUID.randomUUID().toString())
+            .title(request.title())
+            .description(request.relayDescription())
+            .reactionsCount(0)
+            .ticklesCount(1)
+            .status(RelayStatus.ACTIVE)
+            .updatedAt(LocalDateTime.now())
+            .build();
+        relayRepository.save(relay);
 
-    Tickle tickle = Tickle.builder()
-        .relayId(relay.getId())
-        .authorId(user.getId())
-        .uuid(UUID.randomUUID().toString())
-        .description(request.tickleDescription())
-        .file(fileUrl)
-        .build();
-    tickleRepository.save(tickle);
+        Tickle tickle = Tickle.builder()
+            .relayId(relay.getId())
+            .authorId(user.getId())
+            .uuid(UUID.randomUUID().toString())
+            .description(request.tickleDescription())
+            .file(fileUrl)
+            .build();
+        tickleRepository.save(tickle);
 
-    assignTagWithRelay(relay, request.tags());
+        assignTagWithRelay(relay, request.tags());
 
-    return new RelayCreateResponse(relay.getUuid(), tickle.getUuid());
-  }
+        return new RelayCreateResponse(relay.getUuid(), tickle.getUuid());
+    }
 
-  private void assignTagWithRelay(Relay relay, List<String> tags) {
-    tags.forEach(t -> {
-      Tag tag = tagRepository.findByName(t)
-          .orElseGet(() -> tagRepository.save(
-                  Tag.builder()
-                      .name(t)
-                      .build()
-              )
-          );
-      relayTagRepository.save(
-          RelayTag.builder()
-              .relayId(relay.getId())
-              .tagId(tag.getId())
-              .build()
-      );
-    });
-  }
+    private void assignTagWithRelay(Relay relay, List<String> tags) {
+        tags.forEach(t -> {
+            Tag tag = tagRepository.findByName(t)
+                .orElseGet(() -> tagRepository.save(
+                        Tag.builder()
+                            .name(t)
+                            .build()
+                    )
+                );
+            relayTagRepository.save(
+                RelayTag.builder()
+                    .relayId(relay.getId())
+                    .tagId(tag.getId())
+                    .build()
+            );
+        });
+    }
 
-  public TickleAddResponse addTickle(TickleAddRequest request, MultipartFile file) {
+    public TickleAddResponse addTickle(TickleAddRequest request, MultipartFile file) {
 
-    MvpUser user = createUser(request.userName(), request.userImage());
+        MvpUser user = createUser(request.userName(), request.userImage());
 
-    //TODO file 변환 및 주소값 가져오기
-    String fileUrl = "file url";
+        String fileUrl = mediaManager.saveMediaFile(file);
 
-    Relay relay = relayRepository.findByUuid(request.relayId())
-        .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
+        Relay relay = relayRepository.findByUuid(request.relayId())
+            .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
 
-    relay.addTickle();
+        relay.addTickle();
 
-    Tickle tickle = Tickle.builder()
-        .relayId(relay.getId())
-        .authorId(user.getId())
-        .uuid(UUID.randomUUID().toString())
-        .description(request.tickleDescription())
-        .file(fileUrl)
-        .build();
-    tickleRepository.save(tickle);
+        Tickle tickle = Tickle.builder()
+            .relayId(relay.getId())
+            .authorId(user.getId())
+            .uuid(UUID.randomUUID().toString())
+            .description(request.tickleDescription())
+            .file(fileUrl)
+            .build();
+        tickleRepository.save(tickle);
 
-    return new TickleAddResponse(relay.getUuid(), tickle.getUuid());
-  }
+        return new TickleAddResponse(relay.getUuid(), tickle.getUuid());
+    }
 
-  private MvpUser createUser(String name, String image) {
-    MvpUser user = MvpUser.builder()
-        .uuid(UUID.randomUUID().toString())
-        .nickname(name)
-        .image(image)
-        .build();
-    mvpUserRepository.save(user);
-    return user;
-  }
+    private MvpUser createUser(String name, String image) {
+        MvpUser user = MvpUser.builder()
+            .uuid(UUID.randomUUID().toString())
+            .nickname(name)
+            .image(image)
+            .build();
+        mvpUserRepository.save(user);
+        return user;
+    }
 
-  public void addLike(String tickleId) {
-    Tickle tickle = tickleRepository.findByUuid(tickleId)
-        .orElseThrow(() -> new RestApiException(ErrorCode.TICKLE_NOT_FOUND));
-    tickle.addReaction(ReactionType.LIKE);
-  }
+    public void addLike(String tickleId) {
+        Tickle tickle = tickleRepository.findByUuid(tickleId)
+            .orElseThrow(() -> new RestApiException(ErrorCode.TICKLE_NOT_FOUND));
+        tickle.addReaction(ReactionType.LIKE);
+    }
 }
