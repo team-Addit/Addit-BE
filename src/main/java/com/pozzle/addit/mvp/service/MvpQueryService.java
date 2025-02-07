@@ -113,10 +113,13 @@ public class MvpQueryService {
   public TickleViewResponse readTickle(String tickleId) {
     Tickle tickle = tickleRepository.findByUuid(tickleId)
         .orElseThrow(() -> new RestApiException(ErrorCode.TICKLE_NOT_FOUND));
-
+    Relay relay = relayRepository.findById(tickle.getRelayId())
+        .orElseThrow(() -> new RestApiException(ErrorCode.RELAY_NOT_FOUND));
     MvpUser user = mvpUserRepository.findById(tickle.getAuthorId())
         .orElseThrow(() -> new RestApiException(ErrorCode.USER_NOT_FOUND));
 
-    return TickleViewResponse.of(tickle, user);
+    List<String> tags = getTags(relay.getId());
+
+    return TickleViewResponse.of(relay, tags, tickle, user);
   }
 }
