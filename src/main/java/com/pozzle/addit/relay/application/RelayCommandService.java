@@ -16,7 +16,6 @@ import com.pozzle.addit.relay.repository.TagRepository;
 import com.pozzle.addit.tickle.entity.Tickle;
 import com.pozzle.addit.tickle.repository.TickleRepository;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -45,10 +44,7 @@ public class RelayCommandService {
             .uuid(UUID.randomUUID().toString())
             .title(request.title())
             .description(request.relayDescription())
-            .reactionsCount(0)
-            .ticklesCount(1)
             .status(RelayStatus.ACTIVE)
-            .updatedAt(LocalDateTime.now())
             .build();
         relayRepository.save(relay);
 

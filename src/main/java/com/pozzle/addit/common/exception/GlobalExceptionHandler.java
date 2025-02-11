@@ -12,13 +12,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(RestApiException.class)
     protected ResponseEntity<Response> handleCustomException(RestApiException ex) {
         ErrorCode errorCode = ex.getErrorCode();
-        return handleExceptionInternal(errorCode);
+        String message = ex.getMessage();
+        return handleExceptionInternal(errorCode, message);
     }
 
-    private ResponseEntity<Response> handleExceptionInternal(ErrorCode errorCode) {
+    private ResponseEntity<Response> handleExceptionInternal(ErrorCode errorCode, String message) {
         return ResponseEntity
             .status(errorCode.getHttpStatus())
-            .body(new Response(errorCode.getCode(), errorCode.getMessage(), null));
+            .body(new Response(errorCode.getCode(), errorCode.getMessage(), message));
     }
 }
 

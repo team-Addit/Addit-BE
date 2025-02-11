@@ -1,5 +1,6 @@
 package com.pozzle.addit.relay.entity;
 
+import com.pozzle.addit.common.util.DefaultValidator;
 import com.pozzle.addit.relay.dto.request.RelayUpdateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,13 +18,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+//@Builder
 @Table(name = "relays")
 @EntityListeners(AuditingEntityListener.class)
 public class Relay {
@@ -53,7 +55,21 @@ public class Relay {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @Builder
+    public Relay(Long authorId, String uuid, String title, String description, RelayStatus status) {
+        DefaultValidator.notBlank(title, "릴레이 제목");
+        DefaultValidator.maxLength(title, 100, "릴레이 제목");
+        this.authorId = authorId;
+        this.uuid = uuid;
+        this.title = title;
+        this.description = description;
+        this.reactionsCount = 0;
+        this.ticklesCount = 1;
+        this.status = status;
+    }
 
     public void addTickle() {
         this.ticklesCount++;

@@ -21,7 +21,6 @@ import com.pozzle.addit.tickle.dto.response.TickleAddResponse;
 import com.pozzle.addit.tickle.entity.Tickle;
 import com.pozzle.addit.tickle.repository.TickleRepository;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -57,17 +56,19 @@ public class MvpCommandService {
 
         String fileUrl = mediaManager.saveMediaFile(file);
 
-        Relay relay = Relay.builder()
-            .authorId(user.getId())
-            .uuid(UUID.randomUUID().toString())
-            .title(request.title())
-            .description(request.relayDescription())
-            .reactionsCount(0)
-            .ticklesCount(1)
-            .status(RelayStatus.ACTIVE)
-            .updatedAt(LocalDateTime.now())
-            .build();
-        relayRepository.save(relay);
+        Relay relay;
+        try {
+            relay = Relay.builder()
+                .authorId(user.getId())
+                .uuid(UUID.randomUUID().toString())
+                .title(request.title())
+                .description(request.relayDescription())
+                .status(RelayStatus.ACTIVE)
+                .build();
+            relayRepository.save(relay);
+        } catch (Exception e) {
+            throw new RestApiException(ErrorCode.VALIDATE_FAILED, e.getMessage());
+        }
 
         Tickle tickle = Tickle.builder()
             .relayId(relay.getId())

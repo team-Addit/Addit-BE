@@ -1,11 +1,20 @@
 package com.pozzle.addit.common.exception;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public class RestApiException extends RuntimeException {
 
     private final ErrorCode errorCode;
+    private final String message;
+
+    public RestApiException(ErrorCode errorCode) {
+        this.errorCode = errorCode;
+        this.message = null;
+    }
+
+    public RestApiException(ErrorCode errorCode, String message) {
+        this.errorCode = errorCode;
+        this.message = message;
+    }
 }
