@@ -85,6 +85,9 @@ public class MvpCommandService {
     }
 
     private void assignTagWithRelay(Relay relay, List<String> tags) {
+        if(tags == null) {
+            throw new RestApiException(ErrorCode.EMPTY_TAG);
+        }
         tags.forEach(t -> {
             Tag tag = tagRepository.findByName(t)
                 .orElseGet(() -> tagRepository.save(
