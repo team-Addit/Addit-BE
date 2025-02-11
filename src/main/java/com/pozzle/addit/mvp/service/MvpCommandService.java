@@ -39,15 +39,6 @@ public class MvpCommandService {
     private final TagRepository tagRepository;
     private final GcsMediaManager mediaManager;
 
-    public String createUser(SessionRequest sessionRequest) {
-        MvpUser user = MvpUser.builder()
-            .uuid((UUID.randomUUID().toString()))
-            .nickname(sessionRequest.nickname())
-            .build();
-        mvpUserRepository.save(user);
-        return user.getUuid();
-    }
-
     public RelayCreateResponse createRelay(
         RelayCreateRequest request,
         MultipartFile file) {

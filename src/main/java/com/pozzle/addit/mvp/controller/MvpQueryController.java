@@ -20,24 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MvpQueryController {
 
-  private final SessionValidator sessionValidator;
   private final MvpQueryService mvpQueryService;
-
-//  @GetMapping(value = "/session")
-//  @Operation(summary = "세션 정보 조회",
-//      description = "세션 정보를 조회합니다."
-//  )
-//  public ResponseEntity<?> readSession(
-//      HttpServletRequest request
-//  ) {
-//    SessionResponse sessionResponse;
-//    try {
-//      sessionResponse = sessionValidator.readSession(request);
-//    } catch (RuntimeException e) {
-//      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("no session");
-//    }
-//    return Response.ok(sessionResponse);
-//  }
 
   @GetMapping(value = "/main")
   @Operation(summary = "메인페이지 조회",
