@@ -2,11 +2,17 @@ package com.pozzle.addit.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
+
+    @Value("${server.domain}")
+    private String serverDomain;
 
     @Bean
     public OpenAPI openAPI() {
@@ -15,7 +21,11 @@ public class SwaggerConfig {
             .title("Addit")
             .description("Addit API");
 
+        Server server = new Server();
+        server.setUrl(serverDomain); // https://에 접근 가능하게 설정
+
         return new OpenAPI()
-            .info(info);
+            .info(info)
+            .servers(List.of(server));
     }
 }
