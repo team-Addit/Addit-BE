@@ -76,7 +76,7 @@ public class MvpCommandService {
     }
 
     private void assignTagWithRelay(Relay relay, List<String> tags) {
-        if(tags == null) {
+        if(tags.isEmpty()) {
             throw new RestApiException(ErrorCode.EMPTY_TAG);
         }
         tags.forEach(t -> {
