@@ -8,6 +8,7 @@ import java.util.List;
 public record TickleViewResponse(
     String relayId,
     String relayTitle,
+    String relayDescription,
     List<String> tags,
     String tickleId,
     String tickleDescription,
@@ -23,6 +24,7 @@ public record TickleViewResponse(
         return new TickleViewResponse(
             relay.getUuid(),
             relay.getTitle(),
+            relay.getDescription(),
             tags,
             tickle.getUuid(),
             tickle.getDescription(),
