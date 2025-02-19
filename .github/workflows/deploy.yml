@@ -1,9 +1,8 @@
 name: Deploy
 
 on:
-  push:
-    branches: [ "mvp" ]
   pull_request:
+    types: [closed]
     branches: [ "mvp" ]
 
 permissions:
