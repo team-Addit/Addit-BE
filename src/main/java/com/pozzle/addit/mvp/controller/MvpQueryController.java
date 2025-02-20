@@ -55,7 +55,11 @@ public class MvpQueryController {
         HttpServletRequest request,
         @PathVariable String tickleId
     ) {
-        mvpMetricService.update(request.getRemoteAddr());
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty()) {
+            ip = request.getRemoteAddr();
+        }
+        mvpMetricService.update(ip);
         TickleViewResponse response = mvpQueryService.readTickle(tickleId);
         return Response.ok(response);
     }
