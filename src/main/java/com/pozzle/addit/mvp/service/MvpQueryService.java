@@ -38,9 +38,9 @@ public class MvpQueryService {
   private final RelayTagRepository relayTagRepository;
   private final TagRepository tagRepository;
 
-  public MainResponse readMain(int size) {
+  public MainResponse readMain(List<String> excludeIds, int size) {
     //size 만큼 릴레이 가져온다.
-    List<Relay> relays = relayRepository.findRelaysByRandom(size);
+    List<Relay> relays = relayRepository.findRelaysByRandom(excludeIds, size);
 
     List<RelayAndTickleDto> bundles = new ArrayList<>();
     //릴레이 마다 티클&사용자 정보 불러온다.
@@ -50,12 +50,10 @@ public class MvpQueryService {
 
       //처음 3개의 티클의 사용자 프로필 불러오기
       List<String> contributorImages = readContributorImages(r.getId());
-
       RelayPreviewDto relayPreview = RelayPreviewDto.of(r, tags, contributorImages);
 
       //최신 티클 5개 정보 불러오기
       List<TicklePreviewDto> ticklePreviews = readTicklePreviews(r.getId());
-
       bundles.add(RelayAndTickleDto.of(relayPreview, ticklePreviews));
     }
 

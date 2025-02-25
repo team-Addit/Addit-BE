@@ -1,5 +1,8 @@
 package com.pozzle.addit.mvp.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pozzle.addit.common.payload.Response;
 import com.pozzle.addit.mvp.dto.response.MainResponse;
 import com.pozzle.addit.mvp.dto.response.TickleViewResponse;
@@ -8,10 +11,13 @@ import com.pozzle.addit.mvp.service.MvpQueryService;
 import com.pozzle.addit.relay.dto.response.TickleThumbnailsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,9 +36,11 @@ public class MvpQueryController {
             + "각 릴레이마다 최신순의 티클을 5개씩 제공합니다."
     )
     public ResponseEntity<?> readMain(
+        @RequestHeader(value = "Exclude-Ids", required = false) String excludeIdsHeader,
         @RequestParam int size
-    ) {
-        MainResponse response = mvpQueryService.readMain(size);
+    ) throws JsonProcessingException {
+        List<String> excludeIds = List.of(excludeIdsHeader.split(","));
+        MainResponse response = mvpQueryService.readMain(excludeIds, size);
         return Response.ok(response);
     }
 
