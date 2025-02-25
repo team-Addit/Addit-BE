@@ -42,7 +42,7 @@ public class MvpQueryController {
     ) throws JsonProcessingException {
         List<String> excludeIds = Optional.ofNullable(excludeIdsHeader)
             .map(header -> List.of(header.split(",")))
-            .orElse(Collections.emptyList());
+            .orElse(List.of(" "));
         MainResponse response = mvpQueryService.readMain(excludeIds, size);
         return Response.ok(response);
     }
