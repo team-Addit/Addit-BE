@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +40,9 @@ public class MvpQueryController {
         @RequestHeader(value = "Exclude-Ids", required = false) String excludeIdsHeader,
         @RequestParam int size
     ) throws JsonProcessingException {
-        List<String> excludeIds = List.of(excludeIdsHeader.split(","));
+        List<String> excludeIds = Optional.ofNullable(excludeIdsHeader)
+            .map(header -> List.of(header.split(",")))
+            .orElse(List.of(" "));
         MainResponse response = mvpQueryService.readMain(excludeIds, size);
         return Response.ok(response);
     }
