@@ -8,6 +8,7 @@ import com.pozzle.addit.mvp.service.MvpQueryService;
 import com.pozzle.addit.relay.dto.response.TickleThumbnailsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +31,10 @@ public class MvpQueryController {
             + "각 릴레이마다 최신순의 티클을 5개씩 제공합니다."
     )
     public ResponseEntity<?> readMain(
+        @RequestParam List<String> excludeIds,
         @RequestParam int size
     ) {
-        MainResponse response = mvpQueryService.readMain(size);
+        MainResponse response = mvpQueryService.readMain(excludeIds, size);
         return Response.ok(response);
     }
 

@@ -13,6 +13,6 @@ public interface RelayRepository extends JpaRepository<Relay, Long> {
 
   Optional<Relay> findByUuid(String uuid);
 
-  @Query(value = "SELECT * FROM relays ORDER BY RAND() LIMIT :size", nativeQuery = true)
-  List<Relay> findRelaysByRandom(@Param("size") int size);
+  @Query(value = "SELECT * FROM relays r WHERE r.uuid NOT IN (:excludeIds) ORDER BY RAND() LIMIT :size", nativeQuery = true)
+  List<Relay> findRelaysByRandom(@Param("excludeIds") List<String> excludeIds, @Param("size") int size);
 }
